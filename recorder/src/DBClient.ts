@@ -35,7 +35,6 @@ class DBClient {
     this.documentClient = new AWS.DynamoDB.DocumentClient({
       region: process.env.AWS_REGION,
     });
-    console.log('Created new DBClient', this.documentClient);
   }
 
   public async getLatestLastSeen(): Promise<LastSeen | null> {

@@ -8,24 +8,25 @@ interface LastSeenResponse {
   };
 }
 
+const API_ROOT = 'https://api.vk.com/method/';
+const API_USERS_GET_METHOD = 'users.get';
+const API_VERSION = '5.89';
+
 class VKClient {
-  private static API_ROOT = 'https://api.vk.com/method/';
-  private static API_VERSION = '5.89';
   private ACCESS_TOKEN: string;
 
   constructor(accessToken: string) {
     this.ACCESS_TOKEN = accessToken;
-    console.log('Created new VKClient with token: ', this.ACCESS_TOKEN.slice(0, 3));
   }
 
   public async fetchLastSeen(userId: string): Promise<LastSeen> {
     const queryParams = {
       'user_ids': userId,
       'fields': 'last_seen',
-      'v': VKClient.API_VERSION,
+      'v': API_VERSION,
       'access_token': this.ACCESS_TOKEN,
     };
-    const endpoint = `${VKClient.API_ROOT}?${querystring.stringify(queryParams)}`;
+    const endpoint = `${API_ROOT}${API_USERS_GET_METHOD}?${querystring.stringify(queryParams)}`;
     return new Promise<LastSeen>((resolve, reject) => {
       request(endpoint, (error, _response, body) => {
         console.log('Body', body);
