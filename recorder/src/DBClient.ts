@@ -15,6 +15,8 @@ interface LatestLastSeenEntry extends Entry {
   time: number;
 };
 
+const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME!;
+
 const timeToPk = (time: Date): string => {
   const paddedMonthString = `0${time.getUTCMonth()}`.slice(-2);
   return `${time.getUTCFullYear()}${paddedMonthString}`;
@@ -28,7 +30,6 @@ const latestLastSeenEntryToLastSeen = (entry: LatestLastSeenEntry): LastSeen => 
 };
 
 class DBClient {
-  private static TABLE_NAME = process.env.DYNAMODB_TABLE_NAME!;
   private documentClient: AWS.DynamoDB.DocumentClient;
 
   constructor() {
@@ -40,7 +41,7 @@ class DBClient {
   public async getLatestLastSeen(): Promise<LastSeen | null> {
     return new Promise((resolve, reject) => {
       const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
-        TableName: DBClient.TABLE_NAME,
+        TableName: TABLE_NAME,
         Key: {
           pk: LATEST_LAST_SEEN_PK,
           sk: LATEST_LAST_SEEN_SK,
@@ -66,7 +67,7 @@ class DBClient {
   private async insertLastSeen(lastSeen: LastSeen) {
     return new Promise((resolve, reject) => {
       const params: AWS.DynamoDB.DocumentClient.PutItemInput = {
-        TableName: DBClient.TABLE_NAME,
+        TableName: TABLE_NAME,
         Item: {
           pk: timeToPk(lastSeen.time),
           sk: lastSeen.time.getTime(),
@@ -83,12 +84,16 @@ class DBClient {
   private async updateLatestLastSeen(lastSeen: LastSeen) {
     return new Promise((resolve, reject) => {
       const params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
-        TableName: DBClient.TABLE_NAME,
+        TableName: TABLE_NAME,
         Key: {
           pk: LATEST_LAST_SEEN_PK,
           sk: LATEST_LAST_SEEN_SK,
         },
-        UpdateExpression: 'SET time = :t, platformId = :p',
+        UpdateExpression: 'SET #t = :t, #p = :p',
+        ExpressionAttributeNames: {
+          '#t': 'time',
+          '#p': 'platformId',
+        },
         ExpressionAttributeValues: {
           ':t': lastSeen.time.getTime(),
           ':p': lastSeen.platformId,
