@@ -15,6 +15,7 @@ class VKClient {
 
   constructor(accessToken: string) {
     this.ACCESS_TOKEN = accessToken;
+    console.log('Created new VKClient with token: ', this.ACCESS_TOKEN.slice(0, 3));
   }
 
   public async fetchLastSeen(userId: string): Promise<LastSeen> {
