@@ -27,6 +27,7 @@ class VKClient {
     const endpoint = `${VKClient.API_ROOT}?${querystring.stringify(queryParams)}`;
     return new Promise<LastSeen>((resolve, reject) => {
       request(endpoint, (error, _response, body) => {
+        console.log('Body', body);
         if (error) reject(error);
         const firstUserData: LastSeenResponse = JSON.parse(body)['response'][0];
         resolve({
