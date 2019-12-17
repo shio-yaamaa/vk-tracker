@@ -1,0 +1,21 @@
+{
+  "name": "vk-recorder",
+  "version": "0.0.0",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "dependencies": {
+    "@sentry/node": "^5.10.2",
+    "aws-sdk": "^2.590.0",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.12",
+    "@types/request": "^2.48.3",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.3",
+    "webpack-cli": "^3.3.10"
+  }
+}
